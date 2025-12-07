@@ -24,6 +24,24 @@ jobs:
       - name: Deploy to Vercel
         run: |
           npm install -g vercel
-          cd build/web
+          # Create .vercel/output structure for --prebuilt flag
+          mkdir -p .vercel/output/static
+          cp -r build/web/* .vercel/output/static/
+          # Create config.json for Vercel output
+          cat > .vercel/output/config.json << EOF
+          {
+            "version": 3,
+            "routes": [
+              {
+                "handle": "filesystem"
+              },
+              {
+                "src": "/(.*)",
+                "dest": "/$1"
+              }
+            ]
+          }
+          EOF
+          # Deploy the prebuilt output
           vercel deploy --prebuilt --prod --yes \
             --token ${{ secrets.VERCEL_TOKEN }}
