@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../models/portfolio_data.dart';
 import '../theme/app_theme.dart';
 
@@ -11,6 +12,7 @@ class ProjectsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     return Container(
       width: double.infinity,
@@ -18,7 +20,7 @@ class ProjectsSection extends StatelessWidget {
         horizontal: isMobile ? 20 : 40,
         vertical: isMobile ? 60 : 100,
       ),
-      color: AppTheme.surfaceColor,
+      color: AppTheme.getSurfaceColor(isDarkMode),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -26,7 +28,7 @@ class ProjectsSection extends StatelessWidget {
             children: [
               Text(
                 'Featured Projects',
-                style: AppTheme.sectionTitleStyle.copyWith(
+                style: AppTheme.sectionTitleStyle(isDarkMode).copyWith(
                   fontSize: isMobile ? 28 : 36,
                 ),
                 textAlign: TextAlign.center,
@@ -37,7 +39,7 @@ class ProjectsSection extends StatelessWidget {
               SizedBox(height: isMobile ? 12 : 16),
               Text(
                 'Some of my recent work',
-                style: AppTheme.bodyStyle.copyWith(
+                style: AppTheme.bodyStyle(isDarkMode).copyWith(
                   fontSize: isMobile ? 16 : 18,
                 ),
                 textAlign: TextAlign.center,
@@ -54,6 +56,7 @@ class ProjectsSection extends StatelessWidget {
                   (index) => _ProjectCard(
                     project: PortfolioData.projects[index],
                     isMobile: isMobile,
+                    isDarkMode: isDarkMode,
                   )
                       .animate()
                       .fadeIn(
@@ -74,10 +77,12 @@ class ProjectsSection extends StatelessWidget {
 class _ProjectCard extends StatefulWidget {
   final Project project;
   final bool isMobile;
+  final bool isDarkMode;
   
   const _ProjectCard({
     required this.project,
     required this.isMobile,
+    required this.isDarkMode,
   });
   
   @override
@@ -96,6 +101,8 @@ class _ProjectCardState extends State<_ProjectCard> {
   
   @override
   Widget build(BuildContext context) {
+    final primaryColor = widget.isDarkMode ? AppTheme.primaryColor : AppTheme.lightPrimaryColor;
+    
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -103,18 +110,18 @@ class _ProjectCardState extends State<_ProjectCard> {
         duration: const Duration(milliseconds: 300),
         width: widget.isMobile ? double.infinity : 380,
         decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
+          color: AppTheme.getBackgroundColor(widget.isDarkMode),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _isHovered
-                ? AppTheme.primaryColor
-                : AppTheme.surfaceColor,
+                ? primaryColor
+                : AppTheme.getSurfaceColor(widget.isDarkMode),
             width: 2,
           ),
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    color: primaryColor.withOpacity(0.3),
                     blurRadius: 30,
                     spreadRadius: 5,
                   ),
@@ -128,8 +135,8 @@ class _ProjectCardState extends State<_ProjectCard> {
               height: widget.isMobile ? 150 : 200,
               decoration: BoxDecoration(
                 gradient: _isHovered
-                    ? AppTheme.accentGradient
-                    : AppTheme.primaryGradient,
+                    ? AppTheme.accentGradient(widget.isDarkMode)
+                    : AppTheme.primaryGradient(widget.isDarkMode),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -153,13 +160,13 @@ class _ProjectCardState extends State<_ProjectCard> {
                     style: GoogleFonts.inter(
                       fontSize: widget.isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                      color: AppTheme.getTextPrimary(widget.isDarkMode),
                     ),
                   ),
                   SizedBox(height: widget.isMobile ? 10 : 12),
                   Text(
                     widget.project.description,
-                    style: AppTheme.bodyStyle.copyWith(
+                    style: AppTheme.bodyStyle(widget.isDarkMode).copyWith(
                       fontSize: widget.isMobile ? 14 : 16,
                     ),
                     maxLines: widget.isMobile ? 4 : 3,
@@ -176,17 +183,17 @@ class _ProjectCardState extends State<_ProjectCard> {
                                 vertical: widget.isMobile ? 5 : 6,
                               ),
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryColor.withOpacity(0.2),
+                                color: primaryColor.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: AppTheme.primaryColor.withOpacity(0.5),
+                                  color: primaryColor.withOpacity(0.5),
                                 ),
                               ),
                               child: Text(
                                 tech,
                                 style: GoogleFonts.inter(
                                   fontSize: widget.isMobile ? 11 : 12,
-                                  color: AppTheme.primaryColor,
+                                  color: primaryColor,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -201,6 +208,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                               label: 'GitHub',
                               icon: Icons.code,
                               onPressed: () => _launchURL(widget.project.githubUrl),
+                              isDarkMode: widget.isDarkMode,
                             ),
                             const SizedBox(height: 12),
                             _ProjectButton(
@@ -208,6 +216,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                               icon: Icons.open_in_new,
                               isOutlined: true,
                               onPressed: () => _launchURL(widget.project.demoUrl),
+                              isDarkMode: widget.isDarkMode,
                             ),
                           ],
                         )
@@ -218,6 +227,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                                 label: 'GitHub',
                                 icon: Icons.code,
                                 onPressed: () => _launchURL(widget.project.githubUrl),
+                                isDarkMode: widget.isDarkMode,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -227,6 +237,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                                 icon: Icons.open_in_new,
                                 isOutlined: true,
                                 onPressed: () => _launchURL(widget.project.demoUrl),
+                                isDarkMode: widget.isDarkMode,
                               ),
                             ),
                           ],
@@ -246,12 +257,14 @@ class _ProjectButton extends StatefulWidget {
   final IconData icon;
   final bool isOutlined;
   final VoidCallback onPressed;
+  final bool isDarkMode;
   
   const _ProjectButton({
     required this.label,
     required this.icon,
     this.isOutlined = false,
     required this.onPressed,
+    required this.isDarkMode,
   });
   
   @override
@@ -263,6 +276,8 @@ class _ProjectButtonState extends State<_ProjectButton> {
   
   @override
   Widget build(BuildContext context) {
+    final primaryColor = widget.isDarkMode ? AppTheme.primaryColor : AppTheme.lightPrimaryColor;
+    
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -274,9 +289,9 @@ class _ProjectButtonState extends State<_ProjectButton> {
           decoration: BoxDecoration(
             gradient: widget.isOutlined
                 ? null
-                : (_isHovered ? AppTheme.accentGradient : AppTheme.primaryGradient),
+                : (_isHovered ? AppTheme.accentGradient(widget.isDarkMode) : AppTheme.primaryGradient(widget.isDarkMode)),
             border: widget.isOutlined
-                ? Border.all(color: AppTheme.primaryColor, width: 2)
+                ? Border.all(color: primaryColor, width: 2)
                 : null,
             borderRadius: BorderRadius.circular(10),
           ),
@@ -286,7 +301,7 @@ class _ProjectButtonState extends State<_ProjectButton> {
               Icon(
                 widget.icon,
                 size: 18,
-                color: widget.isOutlined ? AppTheme.primaryColor : Colors.white,
+                color: widget.isOutlined ? primaryColor : Colors.white,
               ),
               const SizedBox(width: 8),
               Text(
@@ -294,7 +309,7 @@ class _ProjectButtonState extends State<_ProjectButton> {
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: widget.isOutlined ? AppTheme.primaryColor : Colors.white,
+                  color: widget.isOutlined ? primaryColor : Colors.white,
                 ),
               ),
             ],

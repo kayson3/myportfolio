@@ -11,11 +11,15 @@ class AppTheme {
   static const Color textPrimary = Color(0xFFF1F5F9); // Light gray
   static const Color textSecondary = Color(0xFF94A3B8); // Medium gray
   
-  // Color Palette - Light Mode
-  static const Color lightBackgroundColor = Color(0xFFF8FAFC); // Light gray
-  static const Color lightSurfaceColor = Color(0xFFFFFFFF); // White
-  static const Color lightTextPrimary = Color(0xFF0F172A); // Dark blue-gray
-  static const Color lightTextSecondary = Color(0xFF475569); // Medium gray
+  // Color Palette - Light Mode (more vibrant and distinct)
+  static const Color lightPrimaryColor = Color(0xFF4F46E5); // Deeper indigo for better contrast
+  static const Color lightSecondaryColor = Color(0xFF7C3AED); // Vibrant purple
+  static const Color lightAccentColor = Color(0xFF0891B2); // Deeper cyan
+  static const Color lightBackgroundColor = Color(0xFFFFFFFF); // Pure white
+  static const Color lightSurfaceColor = Color(0xFFF8FAFC); // Very light gray
+  static const Color lightTextPrimary = Color(0xFF1E293B); // Darker slate for better readability
+  static const Color lightTextSecondary = Color(0xFF64748B); // Medium slate gray
+  static const Color lightBorderColor = Color(0xFFE2E8F0); // Light border color
   
   static ThemeData getTheme(bool isDarkMode) {
     return isDarkMode ? darkTheme : lightTheme;
@@ -32,11 +36,9 @@ class AppTheme {
         secondary: secondaryColor,
         tertiary: accentColor,
         surface: surfaceColor,
-        background: backgroundColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: textPrimary,
-        onBackground: textPrimary,
       ),
       textTheme: GoogleFonts.interTextTheme(
         ThemeData.dark().textTheme.apply(
@@ -61,6 +63,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(16),
         ),
       ),
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF334155),
+        thickness: 1,
+      ),
     );
   }
   
@@ -68,18 +74,17 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      primaryColor: primaryColor,
+      primaryColor: lightPrimaryColor,
       scaffoldBackgroundColor: lightBackgroundColor,
       colorScheme: const ColorScheme.light(
-        primary: primaryColor,
-        secondary: secondaryColor,
-        tertiary: accentColor,
+        primary: lightPrimaryColor,
+        secondary: lightSecondaryColor,
+        tertiary: lightAccentColor,
         surface: lightSurfaceColor,
-        background: lightBackgroundColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: lightTextPrimary,
-        onBackground: lightTextPrimary,
+        outline: lightBorderColor,
       ),
       textTheme: GoogleFonts.interTextTheme(
         ThemeData.light().textTheme.apply(
@@ -99,9 +104,32 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: lightSurfaceColor,
-        elevation: 2,
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: lightBorderColor,
+            width: 1,
+          ),
+        ),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: lightBorderColor,
+        thickness: 1,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: lightBorderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: lightBorderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: lightPrimaryColor, width: 2),
         ),
       ),
     );
@@ -124,43 +152,52 @@ class AppTheme {
     return isDarkMode ? textSecondary : lightTextSecondary;
   }
   
-  // Gradient Colors
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [primaryColor, secondaryColor],
-  );
-  
-  static const LinearGradient accentGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [secondaryColor, accentColor],
-  );
-  
-  // Text Styles
-  static TextStyle get headingStyle => GoogleFonts.inter(
+  // Text Styles (theme-aware)
+  static TextStyle headingStyle(bool isDarkMode) => GoogleFonts.inter(
     fontSize: 48,
     fontWeight: FontWeight.bold,
-    color: textPrimary,
+    color: getTextPrimary(isDarkMode),
     height: 1.2,
   );
   
-  static TextStyle get subheadingStyle => GoogleFonts.inter(
+  static TextStyle subheadingStyle(bool isDarkMode) => GoogleFonts.inter(
     fontSize: 32,
     fontWeight: FontWeight.w600,
-    color: textPrimary,
+    color: getTextPrimary(isDarkMode),
   );
   
-  static TextStyle get bodyStyle => GoogleFonts.inter(
+  static TextStyle bodyStyle(bool isDarkMode) => GoogleFonts.inter(
     fontSize: 16,
-    color: textSecondary,
+    color: getTextSecondary(isDarkMode),
     height: 1.6,
   );
   
-  static TextStyle get sectionTitleStyle => GoogleFonts.inter(
+  static TextStyle sectionTitleStyle(bool isDarkMode) => GoogleFonts.inter(
     fontSize: 36,
     fontWeight: FontWeight.bold,
-    color: textPrimary,
+    color: getTextPrimary(isDarkMode),
   );
+  
+  // Gradient Colors (theme-aware)
+  static LinearGradient primaryGradient(bool isDarkMode) => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: isDarkMode 
+      ? [primaryColor, secondaryColor]
+      : [lightPrimaryColor, lightSecondaryColor],
+  );
+  
+  static LinearGradient accentGradient(bool isDarkMode) => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: isDarkMode
+      ? [secondaryColor, accentColor]
+      : [lightSecondaryColor, lightAccentColor],
+  );
+  
+  // Get border color based on theme
+  static Color getBorderColor(bool isDarkMode) {
+    return isDarkMode ? const Color(0xFF334155) : lightBorderColor;
+  }
 }
 

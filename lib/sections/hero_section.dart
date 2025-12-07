@@ -22,6 +22,7 @@ class HeroSection extends StatelessWidget {
     final isTablet =
         MediaQuery.of(context).size.width < 1024 &&
         MediaQuery.of(context).size.width >= 768;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       width: double.infinity,
@@ -34,8 +35,8 @@ class HeroSection extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.backgroundColor,
-            AppTheme.surfaceColor.withOpacity(0.5),
+            AppTheme.getBackgroundColor(isDarkMode),
+            AppTheme.getSurfaceColor(isDarkMode).withOpacity(0.5),
           ],
         ),
       ),
@@ -54,7 +55,11 @@ class HeroSection extends StatelessWidget {
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: AppTheme.primaryColor.withOpacity(0.3),
+                                color:
+                                    (isDarkMode
+                                            ? AppTheme.primaryColor
+                                            : AppTheme.lightPrimaryColor)
+                                        .withOpacity(0.3),
                                 blurRadius: 40,
                                 spreadRadius: 10,
                               ),
@@ -66,7 +71,9 @@ class HeroSection extends StatelessWidget {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    gradient: AppTheme.primaryGradient,
+                                    gradient: AppTheme.primaryGradient(
+                                      isDarkMode,
+                                    ),
                                   ),
                                 ),
                                 _ProfileImage(),
@@ -88,7 +95,7 @@ class HeroSection extends StatelessWidget {
                               'Hi, I\'m',
                               style: GoogleFonts.inter(
                                 fontSize: 18,
-                                color: AppTheme.textSecondary,
+                                color: AppTheme.getTextSecondary(isDarkMode),
                                 fontWeight: FontWeight.w500,
                               ),
                             )
@@ -99,11 +106,13 @@ class HeroSection extends StatelessWidget {
                         Text(
                               PortfolioData.name,
                               textAlign: TextAlign.center,
-                              style: AppTheme.headingStyle.copyWith(
+                              style: AppTheme.headingStyle(isDarkMode).copyWith(
                                 fontSize: 36,
                                 foreground: Paint()
-                                  ..shader = AppTheme.primaryGradient
-                                      .createShader(
+                                  ..shader =
+                                      AppTheme.primaryGradient(
+                                        isDarkMode,
+                                      ).createShader(
                                         const Rect.fromLTWH(0, 0, 400, 100),
                                       ),
                               ),
@@ -117,7 +126,7 @@ class HeroSection extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 fontSize: 20,
-                                color: AppTheme.textPrimary,
+                                color: AppTheme.getTextPrimary(isDarkMode),
                                 fontWeight: FontWeight.w600,
                               ),
                             )
@@ -128,7 +137,9 @@ class HeroSection extends StatelessWidget {
                         Text(
                               PortfolioData.bio,
                               textAlign: TextAlign.center,
-                              style: AppTheme.bodyStyle.copyWith(fontSize: 16),
+                              style: AppTheme.bodyStyle(
+                                isDarkMode,
+                              ).copyWith(fontSize: 16),
                             )
                             .animate()
                             .fadeIn(duration: 600.ms, delay: 600.ms)
@@ -156,7 +167,9 @@ class HeroSection extends StatelessWidget {
                                   label: 'View Resume',
                                   icon: Icons.description,
                                   isOutlined: true,
-                                  onPressed: () {},
+                                  onPressed: () => _launchURL(
+                                    'mailto:${PortfolioData.resumeUrl}',
+                                  ),
                                 )
                                 .animate()
                                 .fadeIn(duration: 600.ms, delay: 900.ms)
@@ -210,7 +223,7 @@ class HeroSection extends StatelessWidget {
                                 'Hi, I\'m',
                                 style: GoogleFonts.inter(
                                   fontSize: isTablet ? 20 : 24,
-                                  color: AppTheme.textSecondary,
+                                  color: AppTheme.getTextSecondary(isDarkMode),
                                   fontWeight: FontWeight.w500,
                                 ),
                               )
@@ -220,14 +233,22 @@ class HeroSection extends StatelessWidget {
                           const SizedBox(height: 16),
                           Text(
                                 PortfolioData.name,
-                                style: AppTheme.headingStyle.copyWith(
-                                  fontSize: isTablet ? 48 : 64,
-                                  foreground: Paint()
-                                    ..shader = AppTheme.primaryGradient
-                                        .createShader(
-                                          const Rect.fromLTWH(0, 0, 400, 100),
-                                        ),
-                                ),
+                                style: AppTheme.headingStyle(isDarkMode)
+                                    .copyWith(
+                                      fontSize: isTablet ? 48 : 64,
+                                      foreground: Paint()
+                                        ..shader =
+                                            AppTheme.primaryGradient(
+                                              isDarkMode,
+                                            ).createShader(
+                                              const Rect.fromLTWH(
+                                                0,
+                                                0,
+                                                400,
+                                                100,
+                                              ),
+                                            ),
+                                    ),
                               )
                               .animate()
                               .fadeIn(duration: 600.ms, delay: 200.ms)
@@ -237,7 +258,7 @@ class HeroSection extends StatelessWidget {
                                 PortfolioData.title,
                                 style: GoogleFonts.inter(
                                   fontSize: isTablet ? 28 : 32,
-                                  color: AppTheme.textPrimary,
+                                  color: AppTheme.getTextPrimary(isDarkMode),
                                   fontWeight: FontWeight.w600,
                                 ),
                               )
@@ -251,9 +272,9 @@ class HeroSection extends StatelessWidget {
                                 ),
                                 child: Text(
                                   PortfolioData.bio,
-                                  style: AppTheme.bodyStyle.copyWith(
-                                    fontSize: isTablet ? 16 : 18,
-                                  ),
+                                  style: AppTheme.bodyStyle(
+                                    isDarkMode,
+                                  ).copyWith(fontSize: isTablet ? 16 : 18),
                                 ),
                               )
                               .animate()
@@ -331,9 +352,11 @@ class HeroSection extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(24),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppTheme.primaryColor.withOpacity(
-                                        0.3,
-                                      ),
+                                      color:
+                                          (isDarkMode
+                                                  ? AppTheme.primaryColor
+                                                  : AppTheme.lightPrimaryColor)
+                                              .withOpacity(0.3),
                                       blurRadius: 40,
                                       spreadRadius: 10,
                                     ),
@@ -345,7 +368,9 @@ class HeroSection extends StatelessWidget {
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          gradient: AppTheme.primaryGradient,
+                                          gradient: AppTheme.primaryGradient(
+                                            isDarkMode,
+                                          ),
                                         ),
                                       ),
                                       _ProfileImage(),
@@ -390,6 +415,11 @@ class _ActionButtonState extends State<_ActionButton> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDarkMode
+        ? AppTheme.primaryColor
+        : AppTheme.lightPrimaryColor;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -402,16 +432,16 @@ class _ActionButtonState extends State<_ActionButton> {
             gradient: widget.isOutlined
                 ? null
                 : (_isHovered
-                      ? AppTheme.accentGradient
-                      : AppTheme.primaryGradient),
+                      ? AppTheme.accentGradient(isDarkMode)
+                      : AppTheme.primaryGradient(isDarkMode)),
             border: widget.isOutlined
-                ? Border.all(color: AppTheme.primaryColor, width: 2)
+                ? Border.all(color: primaryColor, width: 2)
                 : null,
             borderRadius: BorderRadius.circular(12),
             boxShadow: _isHovered
                 ? [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.4),
+                      color: primaryColor.withOpacity(0.4),
                       blurRadius: 20,
                       spreadRadius: 2,
                     ),
@@ -423,7 +453,7 @@ class _ActionButtonState extends State<_ActionButton> {
             children: [
               Icon(
                 widget.icon,
-                color: widget.isOutlined ? AppTheme.primaryColor : Colors.white,
+                color: widget.isOutlined ? primaryColor : Colors.white,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -432,9 +462,7 @@ class _ActionButtonState extends State<_ActionButton> {
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: widget.isOutlined
-                      ? AppTheme.primaryColor
-                      : Colors.white,
+                  color: widget.isOutlined ? primaryColor : Colors.white,
                 ),
               ),
             ],
@@ -467,6 +495,11 @@ class _SocialIconState extends State<_SocialIcon> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDarkMode
+        ? AppTheme.primaryColor
+        : AppTheme.lightPrimaryColor;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -478,17 +511,19 @@ class _SocialIconState extends State<_SocialIcon> {
           height: 50,
           decoration: BoxDecoration(
             color: _isHovered
-                ? AppTheme.primaryColor.withOpacity(0.2)
-                : AppTheme.surfaceColor,
+                ? primaryColor.withOpacity(0.2)
+                : AppTheme.getSurfaceColor(isDarkMode),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: _isHovered ? AppTheme.primaryColor : Colors.transparent,
+              color: _isHovered ? primaryColor : Colors.transparent,
               width: 2,
             ),
           ),
           child: Icon(
             widget.icon,
-            color: _isHovered ? AppTheme.primaryColor : AppTheme.textSecondary,
+            color: _isHovered
+                ? primaryColor
+                : AppTheme.getTextSecondary(isDarkMode),
             size: 24,
           ),
         ),
@@ -500,6 +535,8 @@ class _SocialIconState extends State<_SocialIcon> {
 class _ProfileImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return SizedBox.expand(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
@@ -509,7 +546,9 @@ class _ProfileImage extends StatelessWidget {
           errorBuilder: (context, error, stackTrace) {
             // Fallback to gradient with icon if image not found
             return Container(
-              decoration: BoxDecoration(gradient: AppTheme.primaryGradient),
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryGradient(isDarkMode),
+              ),
               child: Center(
                 child: Icon(
                   Icons.person,

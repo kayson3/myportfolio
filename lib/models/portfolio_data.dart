@@ -3,9 +3,11 @@ class PortfolioData {
   static const String name = 'Samson Ibikunle';
   static const String title = 'Flutter Developer';
   static const String bio =
-      'xperienced Flutter Developer specializing in building scalable mobile applications with expertise in MVVM architecture, REST APIs, Firebase, and real-time systems. Passionate about creating high-quality, performant applications with a focus on user experience and best practices.';
+      'Experienced Flutter Developer specializing in building scalable mobile applications with expertise in MVVM architecture, REST APIs, Firebase, and real-time systems. Passionate about creating high-quality, performant applications with a focus on user experience and best practices.';
   static const String email = 'ayomiposiibikunle@gmail.com';
   static const String location = 'Lagos, Nigeria';
+  static const String resumeUrl =
+      'https://docs.google.com/document/d/1YmGSQQpcamDBPz189wH0tWnhO-NgC6KkBjfbXUwMCis/mobilebasic';
 
   // Profile Image - Place your profile picture in assets/images/profile.jpg
   // Supported formats: jpg, png, webp

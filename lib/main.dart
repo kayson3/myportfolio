@@ -8,9 +8,11 @@ import 'sections/hero_section.dart';
 import 'sections/projects_section.dart';
 import 'sections/skills_section.dart';
 import 'theme/app_theme.dart';
+import 'widgets/loading_screen.dart';
 import 'widgets/nav_bar.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }
 
@@ -23,6 +25,20 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   final ThemeProvider _themeProvider = ThemeProvider();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Simulate loading time for assets and initialization
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -39,10 +55,12 @@ class _MainAppState extends State<MainApp> {
           title: 'Samson Ibikunle - Portfolio',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getTheme(_themeProvider.isDarkMode),
-          home: PortfolioHome(
-            scrollController: AutoScrollController(),
-            themeProvider: _themeProvider,
-          ),
+          home: _isLoading
+              ? const LoadingScreen()
+              : PortfolioHome(
+                  scrollController: AutoScrollController(),
+                  themeProvider: _themeProvider,
+                ),
         );
       },
     );
@@ -109,21 +127,17 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                               children: [
                                 Text(
                                   'About Me',
-                                  style: AppTheme.sectionTitleStyle.copyWith(
-                                    fontSize: isMobile ? 28 : 36,
-                                    color: AppTheme.getTextPrimary(isDarkMode),
-                                  ),
+                                  style: AppTheme.sectionTitleStyle(
+                                    isDarkMode,
+                                  ).copyWith(fontSize: isMobile ? 28 : 36),
                                   textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: isMobile ? 24 : 40),
                                 Text(
                                   'I am a passionate software developer with a strong focus on creating beautiful, functional, and user-friendly applications. With expertise in Flutter, web development, and modern software engineering practices, I bring ideas to life through code.',
-                                  style: AppTheme.bodyStyle.copyWith(
-                                    fontSize: isMobile ? 16 : 18,
-                                    color: AppTheme.getTextSecondary(
-                                      isDarkMode,
-                                    ),
-                                  ),
+                                  style: AppTheme.bodyStyle(
+                                    isDarkMode,
+                                  ).copyWith(fontSize: isMobile ? 16 : 18),
                                   textAlign: TextAlign.center,
                                 ),
                               ],

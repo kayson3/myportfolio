@@ -1,27 +1,29 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+
 import '../providers/theme_provider.dart';
 import '../theme/app_theme.dart';
 
 class NavBar extends StatefulWidget {
   final AutoScrollController scrollController;
   final ThemeProvider themeProvider;
-  
+
   const NavBar({
     super.key,
     required this.scrollController,
     required this.themeProvider,
   });
-  
+
   @override
   State<NavBar> createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
   bool _isMenuOpen = false;
-  
+
   Future<void> _scrollToIndex(int index) async {
     await widget.scrollController.scrollToIndex(
       index,
@@ -32,12 +34,12 @@ class _NavBarState extends State<NavBar> {
       setState(() => _isMenuOpen = false);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
     final isDarkMode = widget.themeProvider.isDarkMode;
-    
+
     return Stack(
       children: [
         ClipRect(
@@ -60,9 +62,9 @@ class _NavBarState extends State<NavBar> {
                       fontSize: isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
                       foreground: Paint()
-                        ..shader = AppTheme.primaryGradient.createShader(
-                          const Rect.fromLTWH(0, 0, 100, 100),
-                        ),
+                        ..shader = AppTheme.primaryGradient(
+                          isDarkMode,
+                        ).createShader(const Rect.fromLTWH(0, 0, 100, 100)),
                     ),
                   ),
                   Row(
@@ -115,7 +117,9 @@ class _NavBarState extends State<NavBar> {
                           color: AppTheme.getTextPrimary(isDarkMode),
                         ),
                         onPressed: () => widget.themeProvider.toggleTheme(),
-                        tooltip: isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+                        tooltip: isDarkMode
+                            ? 'Switch to Light Mode'
+                            : 'Switch to Dark Mode',
                       ),
                       if (isMobile)
                         IconButton(
@@ -123,7 +127,8 @@ class _NavBarState extends State<NavBar> {
                             _isMenuOpen ? Icons.close : Icons.menu,
                             color: AppTheme.getTextPrimary(isDarkMode),
                           ),
-                          onPressed: () => setState(() => _isMenuOpen = !_isMenuOpen),
+                          onPressed: () =>
+                              setState(() => _isMenuOpen = !_isMenuOpen),
                         ),
                     ],
                   ),
@@ -143,7 +148,9 @@ class _NavBarState extends State<NavBar> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
-                    color: AppTheme.getSurfaceColor(widget.themeProvider.isDarkMode).withOpacity(0.95),
+                    color: AppTheme.getSurfaceColor(
+                      widget.themeProvider.isDarkMode,
+                    ).withOpacity(0.95),
                   ),
                   child: Column(
                     children: [
@@ -192,20 +199,20 @@ class _NavItem extends StatefulWidget {
   final String label;
   final VoidCallback onTap;
   final bool isDarkMode;
-  
+
   const _NavItem({
     required this.label,
     required this.onTap,
     required this.isDarkMode,
   });
-  
+
   @override
   State<_NavItem> createState() => _NavItemState();
 }
 
 class _NavItemState extends State<_NavItem> {
   bool _isHovered = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -242,13 +249,13 @@ class _MobileNavItem extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final bool isDarkMode;
-  
+
   const _MobileNavItem({
     required this.label,
     required this.onTap,
     required this.isDarkMode,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -268,4 +275,3 @@ class _MobileNavItem extends StatelessWidget {
     );
   }
 }
-
