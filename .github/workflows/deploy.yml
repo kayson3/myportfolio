@@ -1,0 +1,30 @@
+name: Deploy Flutter Web to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Install Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      # Build Flutter Web
+      - name: Build Flutter Web
+        run: flutter build web --wasm
+
+      # Deploy to Vercel
+      - name: Deploy to Vercel
+        run: |
+          npm install -g vercel
+          vercel deploy --prebuilt --prod \
+            --token ${{ secrets.VERCEL_TOKEN }} \
+            --org ${{ secrets.VERCEL_ORG_ID }} \
+            --project ${{ secrets.VERCEL_PROJECT_ID }}
