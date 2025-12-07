@@ -8,7 +8,6 @@ import 'sections/hero_section.dart';
 import 'sections/projects_section.dart';
 import 'sections/skills_section.dart';
 import 'theme/app_theme.dart';
-import 'widgets/loading_screen.dart';
 import 'widgets/nav_bar.dart';
 
 void main() {
@@ -25,20 +24,6 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   final ThemeProvider _themeProvider = ThemeProvider();
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // Simulate loading time for assets and initialization
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    });
-  }
 
   @override
   void dispose() {
@@ -55,12 +40,10 @@ class _MainAppState extends State<MainApp> {
           title: 'Samson Ibikunle - Portfolio',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getTheme(_themeProvider.isDarkMode),
-          home: _isLoading
-              ? const LoadingScreen()
-              : PortfolioHome(
-                  scrollController: AutoScrollController(),
-                  themeProvider: _themeProvider,
-                ),
+          home: PortfolioHome(
+            scrollController: AutoScrollController(),
+            themeProvider: _themeProvider,
+          ),
         );
       },
     );

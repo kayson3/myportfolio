@@ -41,6 +41,7 @@ class _NavBarState extends State<NavBar> {
     final isDarkMode = widget.themeProvider.isDarkMode;
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         ClipRect(
           child: BackdropFilter(
@@ -139,52 +140,68 @@ class _NavBarState extends State<NavBar> {
         ),
         if (isMobile && _isMenuOpen)
           Positioned(
-            top: 60,
+            top: 0,
             left: 0,
             right: 0,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    color: AppTheme.getSurfaceColor(
-                      widget.themeProvider.isDarkMode,
-                    ).withOpacity(0.95),
-                  ),
-                  child: Column(
-                    children: [
-                      _MobileNavItem(
-                        label: 'Home',
-                        onTap: () => _scrollToIndex(0),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                      _MobileNavItem(
-                        label: 'About',
-                        onTap: () => _scrollToIndex(1),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                      _MobileNavItem(
-                        label: 'Skills',
-                        onTap: () => _scrollToIndex(2),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                      _MobileNavItem(
-                        label: 'Experience',
-                        onTap: () => _scrollToIndex(3),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                      _MobileNavItem(
-                        label: 'Projects',
-                        onTap: () => _scrollToIndex(4),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                      _MobileNavItem(
-                        label: 'Contact',
-                        onTap: () => _scrollToIndex(5),
-                        isDarkMode: widget.themeProvider.isDarkMode,
-                      ),
-                    ],
+            child: Material(
+              color: Colors.transparent,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top:
+                          MediaQuery.of(context).padding.top +
+                          (isMobile ? 56 : 60),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: BoxDecoration(
+                      color: AppTheme.getSurfaceColor(
+                        widget.themeProvider.isDarkMode,
+                      ).withOpacity(0.98),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _MobileNavItem(
+                          label: 'Home',
+                          onTap: () => _scrollToIndex(0),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                        _MobileNavItem(
+                          label: 'About',
+                          onTap: () => _scrollToIndex(1),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                        _MobileNavItem(
+                          label: 'Skills',
+                          onTap: () => _scrollToIndex(2),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                        _MobileNavItem(
+                          label: 'Experience',
+                          onTap: () => _scrollToIndex(3),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                        _MobileNavItem(
+                          label: 'Projects',
+                          onTap: () => _scrollToIndex(4),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                        _MobileNavItem(
+                          label: 'Contact',
+                          onTap: () => _scrollToIndex(5),
+                          isDarkMode: widget.themeProvider.isDarkMode,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

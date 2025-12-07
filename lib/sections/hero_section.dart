@@ -167,9 +167,8 @@ class HeroSection extends StatelessWidget {
                                   label: 'View Resume',
                                   icon: Icons.description,
                                   isOutlined: true,
-                                  onPressed: () => _launchURL(
-                                    'mailto:${PortfolioData.resumeUrl}',
-                                  ),
+                                  onPressed: () =>
+                                      _launchURL(PortfolioData.resumeUrl),
                                 )
                                 .animate()
                                 .fadeIn(duration: 600.ms, delay: 900.ms)
@@ -302,7 +301,8 @@ class HeroSection extends StatelessWidget {
                                     label: 'View Resume',
                                     icon: Icons.description,
                                     isOutlined: true,
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        _launchURL(PortfolioData.resumeUrl),
                                   )
                                   .animate()
                                   .fadeIn(duration: 600.ms, delay: 900.ms)
