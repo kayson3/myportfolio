@@ -3,7 +3,7 @@ class PortfolioData {
   static const String name = 'Samson Ibikunle';
   static const String title = 'Flutter Developer';
   static const String bio =
-      'Experienced Flutter Developer specializing in building scalable mobile applications with expertise in MVVM architecture, REST APIs, Firebase, and real-time systems. Passionate about creating high-quality, performant applications with a focus on user experience and best practices.';
+      'xperienced Flutter Developer specializing in building scalable mobile applications with expertise in MVVM architecture, REST APIs, Firebase, and real-time systems. Passionate about creating high-quality, performant applications with a focus on user experience and best practices.';
   static const String email = 'ayomiposiibikunle@gmail.com';
   static const String location = 'Lagos, Nigeria';
 
