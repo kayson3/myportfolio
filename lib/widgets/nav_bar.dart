@@ -28,11 +28,9 @@ class _NavBarState extends State<NavBar> {
     await widget.scrollController.scrollToIndex(
       index,
       preferPosition: AutoScrollPosition.begin,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 700),
     );
-    if (_isMenuOpen) {
-      setState(() => _isMenuOpen = false);
-    }
+    if (_isMenuOpen) setState(() => _isMenuOpen = false);
   }
 
   @override
@@ -43,31 +41,42 @@ class _NavBarState extends State<NavBar> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Frosted bar
         ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: isMobile ? 20 : 40,
-                vertical: isMobile ? 16 : 20,
+                vertical: isMobile ? 12 : 18,
               ),
               decoration: BoxDecoration(
-                color: AppTheme.getSurfaceColor(isDarkMode).withOpacity(0.8),
+                color: AppTheme.getSurfaceColor(
+                  isDarkMode,
+                ).withAlpha((0.65 * 255).round()),
+                border: Border(
+                  bottom: BorderSide(
+                    color: AppTheme.getBorderColor(isDarkMode),
+                  ),
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Logo
                   Text(
-                    'SI',
-                    style: GoogleFonts.inter(
-                      fontSize: isMobile ? 20 : 24,
-                      fontWeight: FontWeight.bold,
+                    'Samson',
+                    style: GoogleFonts.poppins(
+                      fontSize: isMobile ? 18 : 22,
+                      fontWeight: FontWeight.w700,
                       foreground: Paint()
                         ..shader = AppTheme.primaryGradient(
                           isDarkMode,
-                        ).createShader(const Rect.fromLTWH(0, 0, 100, 100)),
+                        ).createShader(const Rect.fromLTWH(0, 0, 200, 60)),
                     ),
                   ),
+
+                  // Desktop nav
                   Row(
                     children: [
                       if (!isMobile)
@@ -78,58 +87,76 @@ class _NavBarState extends State<NavBar> {
                               onTap: () => _scrollToIndex(0),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 32),
+                            const SizedBox(width: 24),
                             _NavItem(
                               label: 'About',
                               onTap: () => _scrollToIndex(1),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 32),
+                            const SizedBox(width: 24),
                             _NavItem(
                               label: 'Skills',
                               onTap: () => _scrollToIndex(2),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 32),
+                            const SizedBox(width: 24),
                             _NavItem(
                               label: 'Experience',
                               onTap: () => _scrollToIndex(3),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 32),
+                            const SizedBox(width: 24),
                             _NavItem(
                               label: 'Projects',
                               onTap: () => _scrollToIndex(4),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 32),
+                            const SizedBox(width: 24),
                             _NavItem(
                               label: 'Contact',
                               onTap: () => _scrollToIndex(5),
                               isDarkMode: isDarkMode,
                             ),
-                            const SizedBox(width: 20),
                           ],
                         ),
-                      // Theme Toggle Button
-                      IconButton(
-                        icon: Icon(
-                          isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                          color: AppTheme.getTextPrimary(isDarkMode),
-                        ),
-                        onPressed: () => widget.themeProvider.toggleTheme(),
-                        tooltip: isDarkMode
-                            ? 'Switch to Light Mode'
-                            : 'Switch to Dark Mode',
-                      ),
-                      if (isMobile)
-                        IconButton(
+
+                      // Theme toggle
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: IconButton(
                           icon: Icon(
-                            _isMenuOpen ? Icons.close : Icons.menu,
+                            isDarkMode ? Icons.light_mode : Icons.dark_mode,
                             color: AppTheme.getTextPrimary(isDarkMode),
                           ),
-                          onPressed: () =>
-                              setState(() => _isMenuOpen = !_isMenuOpen),
+                          onPressed: () => widget.themeProvider.toggleTheme(),
+                          tooltip: isDarkMode
+                              ? 'Switch to Light'
+                              : 'Switch to Dark',
+                        ),
+                      ),
+
+                      // Mobile menu button
+                      if (isMobile)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () =>
+                                setState(() => _isMenuOpen = !_isMenuOpen),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppTheme.getSurfaceColor(
+                                  isDarkMode,
+                                ).withAlpha((0.15 * 255).round()),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                _isMenuOpen ? Icons.close : Icons.menu,
+                                color: AppTheme.getTextPrimary(isDarkMode),
+                              ),
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -138,60 +165,56 @@ class _NavBarState extends State<NavBar> {
             ),
           ),
         ),
-        // Dropdown menu for mobile
+
+        // Mobile dropdown
         if (isMobile && _isMenuOpen)
-          ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                decoration: BoxDecoration(
-                  color: AppTheme.getSurfaceColor(isDarkMode).withOpacity(0.98),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            width: double.infinity,
+            color: AppTheme.getSurfaceColor(
+              widget.themeProvider.isDarkMode,
+            ).withAlpha((0.98 * 255).round()),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _MobileNavItem(
+                  label: 'Home',
+                  icon: Icons.home,
+                  onTap: () => _scrollToIndex(0),
+                  isDarkMode: widget.themeProvider.isDarkMode,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _MobileNavItem(
-                      label: 'Home',
-                      onTap: () => _scrollToIndex(0),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                    _MobileNavItem(
-                      label: 'About',
-                      onTap: () => _scrollToIndex(1),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                    _MobileNavItem(
-                      label: 'Skills',
-                      onTap: () => _scrollToIndex(2),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                    _MobileNavItem(
-                      label: 'Experience',
-                      onTap: () => _scrollToIndex(3),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                    _MobileNavItem(
-                      label: 'Projects',
-                      onTap: () => _scrollToIndex(4),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                    _MobileNavItem(
-                      label: 'Contact',
-                      onTap: () => _scrollToIndex(5),
-                      isDarkMode: widget.themeProvider.isDarkMode,
-                    ),
-                  ],
+                _MobileNavItem(
+                  label: 'About',
+                  icon: Icons.person,
+                  onTap: () => _scrollToIndex(1),
+                  isDarkMode: widget.themeProvider.isDarkMode,
                 ),
-              ),
+                _MobileNavItem(
+                  label: 'Skills',
+                  icon: Icons.code,
+                  onTap: () => _scrollToIndex(2),
+                  isDarkMode: widget.themeProvider.isDarkMode,
+                ),
+                _MobileNavItem(
+                  label: 'Experience',
+                  icon: Icons.work,
+                  onTap: () => _scrollToIndex(3),
+                  isDarkMode: widget.themeProvider.isDarkMode,
+                ),
+                _MobileNavItem(
+                  label: 'Projects',
+                  icon: Icons.folder_open,
+                  onTap: () => _scrollToIndex(4),
+                  isDarkMode: widget.themeProvider.isDarkMode,
+                ),
+                _MobileNavItem(
+                  label: 'Contact',
+                  icon: Icons.email,
+                  onTap: () => _scrollToIndex(5),
+                  isDarkMode: widget.themeProvider.isDarkMode,
+                ),
+              ],
             ),
           ),
       ],
@@ -219,28 +242,47 @@ class _NavItemState extends State<_NavItem> {
 
   @override
   Widget build(BuildContext context) {
+    final primary = AppTheme.primaryColor;
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: _isHovered
-                ? AppTheme.primaryColor.withOpacity(0.1)
-                : Colors.transparent,
-          ),
-          child: Text(
-            widget.label,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+        child: AnimatedScale(
+          duration: const Duration(milliseconds: 180),
+          scale: _isHovered ? 1.02 : 1.0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
               color: _isHovered
-                  ? AppTheme.primaryColor
-                  : AppTheme.getTextSecondary(widget.isDarkMode),
+                  ? primary.withAlpha((0.08 * 255).round())
+                  : Colors.transparent,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.label,
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: _isHovered ? FontWeight.w700 : FontWeight.w600,
+                    color: _isHovered
+                        ? primary
+                        : AppTheme.getTextSecondary(widget.isDarkMode),
+                  ),
+                ),
+                if (_isHovered) const SizedBox(width: 6),
+                if (_isHovered)
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: AppTheme.primaryGradient(widget.isDarkMode),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -251,11 +293,13 @@ class _NavItemState extends State<_NavItem> {
 
 class _MobileNavItem extends StatefulWidget {
   final String label;
+  final IconData icon;
   final VoidCallback onTap;
   final bool isDarkMode;
 
   const _MobileNavItem({
     required this.label,
+    required this.icon,
     required this.onTap,
     required this.isDarkMode,
   });
@@ -269,27 +313,41 @@ class _MobileNavItemState extends State<_MobileNavItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        widget.onTap();
-      },
-      onTapCancel: () => setState(() => _isPressed = false),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        color: _isPressed
-            ? (widget.isDarkMode
-                  ? AppTheme.primaryColor.withOpacity(0.2)
-                  : AppTheme.lightPrimaryColor.withOpacity(0.1))
-            : Colors.transparent,
-        child: Text(
-          widget.label,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppTheme.getTextPrimary(widget.isDarkMode),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
+        onHighlightChanged: (v) => setState(() => _isPressed = v),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: _isPressed
+                ? AppTheme.primaryColor.withAlpha((0.12 * 255).round())
+                : Colors.transparent,
+            border: Border(
+              bottom: BorderSide(
+                color: AppTheme.getBorderColor(widget.isDarkMode),
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                widget.icon,
+                size: 20,
+                color: AppTheme.getTextPrimary(widget.isDarkMode),
+              ),
+              const SizedBox(width: 16),
+              Text(
+                widget.label,
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.getTextPrimary(widget.isDarkMode),
+                ),
+              ),
+            ],
           ),
         ),
       ),

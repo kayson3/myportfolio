@@ -28,7 +28,7 @@ class LoadingScreen extends StatelessWidget {
                         (isDarkMode
                                 ? AppTheme.primaryColor
                                 : AppTheme.lightPrimaryColor)
-                            .withOpacity(0.3),
+                            .withAlpha((0.3 * 255).round()),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),

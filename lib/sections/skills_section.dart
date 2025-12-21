@@ -31,7 +31,7 @@ class SkillsSection extends StatelessWidget {
                   isDarkMode,
                 ).copyWith(fontSize: isMobile ? 28 : 36),
                 textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
+              ).animate().fadeIn(duration: 500.ms).slideY(begin: -0.2, end: 0),
               SizedBox(height: isMobile ? 12 : 16),
               Text(
                 'Technologies I work with',
@@ -39,7 +39,7 @@ class SkillsSection extends StatelessWidget {
                   isDarkMode,
                 ).copyWith(fontSize: isMobile ? 16 : 18),
                 textAlign: TextAlign.center,
-              ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
+              ).animate().fadeIn(duration: 500.ms, delay: 150.ms),
               SizedBox(height: isMobile ? 40 : 60),
               Wrap(
                 spacing: isMobile ? 16 : 24,
@@ -55,11 +55,11 @@ class SkillsSection extends StatelessWidget {
                           )
                           .animate()
                           .fadeIn(
-                            duration: 600.ms,
+                            duration: 500.ms,
                             delay: (300 + index * 100).ms,
                           )
                           .scale(
-                            begin: const Offset(0.8, 0.8),
+                            begin: const Offset(0.92, 0.92),
                             end: const Offset(1, 1),
                           ),
                 ),
@@ -92,90 +92,88 @@ class _SkillCardState extends State<_SkillCard> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = widget.isDarkMode
-        ? AppTheme.primaryColor
-        : AppTheme.lightPrimaryColor;
-    final accentColor = widget.isDarkMode
-        ? AppTheme.accentColor
-        : AppTheme.lightAccentColor;
-
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: widget.isMobile ? double.infinity : 280,
-        padding: EdgeInsets.all(widget.isMobile ? 20 : 24),
-        decoration: BoxDecoration(
-          color: _isHovered
-              ? primaryColor.withOpacity(0.1)
-              : AppTheme.getBackgroundColor(widget.isDarkMode),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: _isHovered
-                ? primaryColor
-                : AppTheme.getSurfaceColor(widget.isDarkMode),
-            width: 2,
-          ),
-          boxShadow: _isHovered
-              ? [
-                  BoxShadow(
-                    color: primaryColor.withOpacity(0.3),
-                    blurRadius: 20,
-                    spreadRadius: 2,
+      child: Card(
+        color: AppTheme.getSurfaceColor(widget.isDarkMode),
+        elevation: _isHovered ? 16 : 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: Container(
+          width: widget.isMobile ? double.infinity : 280,
+          padding: EdgeInsets.all(widget.isMobile ? 16 : 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: _isHovered
+                          ? AppTheme.primaryGradient(widget.isDarkMode)
+                          : null,
+                      color: _isHovered
+                          ? null
+                          : AppTheme.getBackgroundColor(widget.isDarkMode),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      widget.skill.icon,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                   ),
-                ]
-              : null,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(widget.skill.icon, style: const TextStyle(fontSize: 32)),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    widget.skill.name,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      widget.skill.name,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.getTextPrimary(widget.isDarkMode),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: AppTheme.getBackgroundColor(widget.isDarkMode),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: FractionallySizedBox(
+                          widthFactor: widget.skill.level / 100,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.primaryGradient(
+                                widget.isDarkMode,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '${widget.skill.level}%',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.getTextPrimary(widget.isDarkMode),
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.getTextSecondary(widget.isDarkMode),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: widget.skill.level / 100,
-                      minHeight: 8,
-                      backgroundColor: AppTheme.getSurfaceColor(
-                        widget.isDarkMode,
-                      ),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _isHovered ? primaryColor : accentColor,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  '${widget.skill.level}%',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.getTextSecondary(widget.isDarkMode),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
