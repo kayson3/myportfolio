@@ -13,7 +13,7 @@ class PortfolioData {
 
   // Profile Image - Place your profile picture in assets/images/profile.jpg
   // Supported formats: jpg, png, webp
-  static const String profileImagePath = 'assets/images/profile.jpg';
+  static const String profileImagePath = 'assets/images/IMG_0092.jpg';
 
   // Social Links
   static const String github = 'https://github.com/kayson3';
